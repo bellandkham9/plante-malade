@@ -1,0 +1,108 @@
+{% extends "base.html" %} {% block title %}Classifier une Image |
+GhiresClassify{% endblock %} {% block content %}
+<div class="container py-5">
+  <h2 class="text-center mb-4">Classifier une Image</h2>
+
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <!-- Formulaire d'upload -->
+      <div class="upload-area">
+        <form method="post"  action="{% url 'app_plante_detect:classify' %}"  enctype="multipart/form-data" id="upload-form">
+          {% csrf_token %}
+          <div class="text-center" id="upload-container">
+            <i
+              class="fas fa-cloud-upload-alt"
+              style="font-size: 4rem; color: #ccc"
+            ></i>
+            <p class="mt-3 mb-0">Cliquez ou glissez-déposez une image ici</p>
+            <p class="text-muted">Formats supportés: JPG, PNG, JPEG</p>
+            <input
+              type="file"
+              name="image"
+              id="image-upload"
+              accept="image/*"
+              class="d-none"
+              required
+            />
+          </div>
+          <div class="text-center mt-3">
+            <button type="submit" class="btn btn-primary" id="predict-btn">
+              <i class="fas fa-brain me-1"></i> Prédire
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Résultat -->
+      {% if prediction %}
+      <div class="mt-4">
+        <h4 class="mb-4">Résultats de la Classification</h4>
+
+        <div class="prediction-details">
+          <p>
+            <strong>Classe prédite :</strong> {{ prediction.predicted_class }}
+          </p>
+          <p>
+            <strong>Date :</strong> {{ prediction.predicted_at|date:"d/m/Y H:i"
+            }}
+          </p>
+        </div>
+
+        <div class="text-center mt-4">
+          <a
+            href="{% url 'app_plante_detect:classify' %}"
+            class="btn btn-outline-primary"
+          >
+            <i class="fas fa-redo me-1"></i> Nouvelle Classification
+          </a>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<script>
+// Clic classique
+document.getElementById('upload-container').addEventListener('click', () => {
+    document.getElementById('image-upload').click();
+});
+
+// Affichage du nom de fichier quand un fichier est sélectionné
+document.getElementById('image-upload').addEventListener('change', function(e) {
+    if (this.files.length) {
+        const fileName = this.files[0].name;
+        document.querySelector('#upload-container p.mb-0').textContent = fileName;
+    }
+});
+
+// DRAG & DROP
+const uploadContainer = document.getElementById('upload-container');
+
+uploadContainer.addEventListener('dragover', function(e) {
+    e.preventDefault();
+    uploadContainer.classList.add('dragover');
+});
+
+uploadContainer.addEventListener('dragleave', function(e) {
+    uploadContainer.classList.remove('dragover');
+});
+
+uploadContainer.addEventListener('drop', function(e) {
+    e.preventDefault();
+    uploadContainer.classList.remove('dragover');
+
+    const fileInput = document.getElementById('image-upload');
+    const droppedFile = e.dataTransfer.files[0];
+
+    if (droppedFile && droppedFile.type.startsWith('image/')) {
+        fileInput.files = e.dataTransfer.files;
+
+        // Affiche le nom de fichier
+        document.querySelector('#upload-container p.mb-0').textContent = droppedFile.name;
+    } else {
+        alert("Seuls les fichiers image sont acceptés.");
+    }
+});
+</script>
+{% endblock %}
