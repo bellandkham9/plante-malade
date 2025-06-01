@@ -5,7 +5,7 @@ from .services.tflite_model import predict
 from .models import Prediction
 
 def home(request):
-    return render(request, 'home.html')
+    return render(request, 'index.html')
 
 
 def classify(request):
