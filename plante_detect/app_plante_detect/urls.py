@@ -6,7 +6,7 @@ from . import views
 app_name = 'app_plante_detect'
 
 urlpatterns = [
-    path('home/', views.home, name='home'),
+    path('/', views.home, name='home'),
     path('classify/', views.classify, name='classify'),
     path('historique/', views.historique_predictions, name='history'),
 ]
