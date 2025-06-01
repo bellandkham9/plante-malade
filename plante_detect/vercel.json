@@ -7,7 +7,7 @@
     "routes": [
       {
         "src": "/(.*)",
-        "dest": "plante_detect/wsgi.py"
+        "dest": "/"
       }
     ]
 }
