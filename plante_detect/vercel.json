@@ -1,23 +1,27 @@
+
 {
   "version": 2,
   "builds": [
     {
       "src": "plante_detect/wsgi.py",
-      "use": "@vercel/python",
-      "config": { 
-        "maxLambdaSize": "15mb",
-        "runtime": "python3.6"
-      }
+      "use": "@vercel/python"
     },
     {
-      "src": "staticfiles/**",
-      "use": "@vercel/static"
+      "src": "build_files.sh",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "staticfiles"
+      }
     }
   ],
   "routes": [
     {
       "src": "/static/(.*)",
       "dest": "/static/$1"
+    },
+    {
+      "src": "/media/(.*)",
+      "dest": "/media/$1"
     },
     {
       "src": "/(.*)",
